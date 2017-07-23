@@ -1,0 +1,17 @@
+package com.ums.umsbackend.utils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+/**
+ * Created by Naveen on 17/07/2017.
+ */
+public class Utils {
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
