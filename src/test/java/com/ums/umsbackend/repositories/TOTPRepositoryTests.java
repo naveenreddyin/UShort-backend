@@ -2,6 +2,7 @@ package com.ums.umsbackend.repositories;
 
 import static org.assertj.core.api.Assertions.*;
 
+import com.ums.umsbackend.domains.Duration;
 import com.ums.umsbackend.domains.UserTOTP;
 import com.ums.umsbackend.domains.Users;
 import com.ums.umsbackend.repositories.TOTPRepository;
@@ -28,6 +29,9 @@ public class TOTPRepositoryTests  {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DurationConfigRespository durationConfigRespository;
 
     private Users user;
     private UserTOTP userTOTP;
@@ -86,6 +90,19 @@ public class TOTPRepositoryTests  {
         totpRepository.save(randomUserTOTP);
 
         UserTOTP userTOTP = totpRepository.findByUser(userSaveResponse);
+        assertThat(userTOTP.getUser().getEmail()).isEqualToIgnoringCase(randomUser.getEmail());
+    }
+
+    @Test
+    public void testToFetchByCode(){
+        Users randomUser = new Users(1L,"random@dispostable.com", "123456");
+        Users userSaveResponse = userRepository.save(randomUser);
+
+        final LocalDateTime today = LocalDateTime.now();
+        UserTOTP randomUserTOTP = new UserTOTP(1L, "0F0F0F", today, userSaveResponse);
+        totpRepository.save(randomUserTOTP);
+
+        UserTOTP userTOTP = totpRepository.findByCode(randomUserTOTP.getCode());
         assertThat(userTOTP.getUser().getEmail()).isEqualToIgnoringCase(randomUser.getEmail());
     }
 

@@ -165,12 +165,23 @@ public class UMSApplicationTests {
 
 		Users user = new Users(2L,"naveenrandom123@dispostable.com", "123456");
 		Users userSaveResponse = userRepository.save(user);
-		System.out.println(userSaveResponse.getEmail());
-		final LocalDateTime today = LocalDateTime.now();
+
+		LocalDateTime today = LocalDateTime.now().minusHours(3);
 		UserTOTP userTOTP = new UserTOTP(2L, "123456", today, userSaveResponse);
 		UserTOTP userTOTP1 = totpRepository.save(userTOTP);
 
-		given().port(port).when().get("/api/validate/"+userTOTP1.getCode()).then().statusCode(HttpStatus.SC_OK);
+		given().port(port).when().get("/api/validate/"+userTOTP1.getCode()).then().statusCode(HttpStatus.SC_BAD_REQUEST);
+
+
+		Users anotherUser = new Users(3L,"naveenrandom1234@dispostable.com", "123456");
+		Users userSaveResponse2 = userRepository.save(anotherUser);
+
+		today = LocalDateTime.now();
+		UserTOTP userTOTP2 = new UserTOTP(3L, "123567", today, userSaveResponse2);
+		UserTOTP userTOTP3 = totpRepository.save(userTOTP2);
+
+		given().port(port).when().get("/api/validate/"+userTOTP3.getCode()).then().statusCode(HttpStatus.SC_OK);
+
 
 	}
 

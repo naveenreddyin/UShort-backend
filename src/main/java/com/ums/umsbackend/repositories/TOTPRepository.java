@@ -16,4 +16,5 @@ public interface TOTPRepository extends CrudRepository<UserTOTP, Long> {
 
     Long deleteUserByUserEmail(String email);
 
+    UserTOTP findByCode(String code);
 }

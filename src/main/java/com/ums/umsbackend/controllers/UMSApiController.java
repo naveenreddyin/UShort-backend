@@ -1,9 +1,12 @@
 package com.ums.umsbackend.controllers;
 
+import com.ums.umsbackend.domains.Duration;
 import com.ums.umsbackend.domains.UserTOTP;
 import com.ums.umsbackend.domains.Users;
+import com.ums.umsbackend.repositories.DurationConfigRespository;
 import com.ums.umsbackend.repositories.TOTPRepository;
 import com.ums.umsbackend.repositories.UserRepository;
+import com.ums.umsbackend.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,9 @@ public class UMSApiController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DurationConfigRespository durationConfigRespository;
 
     @RequestMapping(value = "/usertotp", method = RequestMethod.POST)
     public ResponseEntity<UserTOTP> createUserTOTP(@RequestParam("userId") String userId, @RequestParam("code") String code){
@@ -45,9 +51,23 @@ public class UMSApiController {
     }
 
     @RequestMapping(value = "/validate/{code}", method = RequestMethod.GET)
-    public ResponseEntity<?> validateCode(@PathVariable("code") String code){
+    public ResponseEntity<UserTOTP> validateCode(@PathVariable("code") String code){
 
+        UserTOTP userTOTP = totpRepository.findByCode(code);
+        LocalDateTime createdTime = userTOTP.getCreationTime();
+        LocalDateTime now = LocalDateTime.now();
 
-        return ResponseEntity.ok("HELLO");
+        Duration duration = durationConfigRespository.findFirstByOrderByIdAsc();
+
+        LocalDateTime endTime = createdTime.plusMinutes(Long.valueOf(duration.getTimeDuration()));
+
+        boolean result = Utils.isBetween(now, createdTime, endTime);
+
+        System.out.println(""+result);
+
+        if(result)
+            return new ResponseEntity<UserTOTP>(userTOTP, HttpStatus.OK);
+
+        return new ResponseEntity<UserTOTP>(userTOTP, HttpStatus.BAD_REQUEST);
     }
 }
