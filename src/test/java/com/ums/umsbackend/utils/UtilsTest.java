@@ -12,6 +12,15 @@ import static org.junit.Assert.*;
  */
 public class UtilsTest {
     @Test
+    public void randomAlphaNumeric() throws Exception {
+
+        String generatedString = Utils.randomAlphaNumeric(6);
+
+        assertThat(generatedString.length()).isEqualTo(6);
+
+    }
+
+    @Test
     public void isBetween() throws Exception {
 
         LocalDateTime start = LocalDateTime.now();
@@ -23,5 +32,7 @@ public class UtilsTest {
         assertThat(Utils.isBetween(check, start, end)).isTrue();
 
     }
+
+
 
 }

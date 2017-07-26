@@ -3,14 +3,13 @@ package com.ums.umsbackend.repositories;
 import static org.assertj.core.api.Assertions.*;
 
 import com.ums.umsbackend.domains.Users;
-import com.ums.umsbackend.repositories.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 /**
  * Created by Naveen on 16/07/2017.
@@ -41,6 +40,7 @@ public class UsersRepositoryTests {
         final Users user1 = new Users(1L,"naveen@dispostable.com", "123456");
 
         userRepository.save(user1);
+        assertThat(userRepository.findByEmail("naveen@dispostable.com")).isNotNull();
 
         userRepository.deleteByEmail("naveen@dispostable.com");
 

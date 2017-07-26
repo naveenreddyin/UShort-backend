@@ -7,6 +7,8 @@ import lombok.Data;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Set;
+
 /**
  * Created by Naveen on 16/07/2017.
  */
@@ -17,9 +19,30 @@ public class Users {
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     private @Id @GeneratedValue(strategy = GenerationType.AUTO) Long id;
-    @Column(unique = true)
+    @Column(name = "username", unique = true)
     private String email;
     private String password;
+    private boolean enabled = true;
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
+
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @OneToOne(mappedBy = "user")
     private UserTOTP userTOTP;
@@ -66,3 +89,4 @@ public class Users {
         this.password = PASSWORD_ENCODER.encode(password);
     }
 }
+

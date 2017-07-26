@@ -1,9 +1,12 @@
 package com.ums.umsbackend.repositories;
 
 import com.ums.umsbackend.domains.Users;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+import java.util.List;
 
 /**
  * Created by Naveen on 16/07/2017.
@@ -13,4 +16,6 @@ public interface UserRepository extends CrudRepository<Users, Long> {
     Long deleteByEmail(String email);
 
     Users findByEmail(@Param("email") String email);
+
+
 }

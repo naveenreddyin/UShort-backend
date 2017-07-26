@@ -95,6 +95,9 @@ public class TOTPRepositoryTests  {
 
     @Test
     public void testToFetchByCode(){
+        userRepository.deleteAll();
+        totpRepository.deleteAll();
+
         Users randomUser = new Users(1L,"random@dispostable.com", "123456");
         Users userSaveResponse = userRepository.save(randomUser);
 

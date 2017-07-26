@@ -28,7 +28,7 @@ public class DurationConfigRespositoryTest {
     @Before
     public void setUp() throws Exception {
 
-        duration = new Duration(1L, 30);
+        duration = new Duration(2L, 30);
     }
 
     @Test
@@ -38,14 +38,15 @@ public class DurationConfigRespositoryTest {
 
     @Test
     public void testToFetchFirstEntry(){
-        final Duration duration2 = new Duration(2L, 20);
-        final Duration duration3 = new Duration(3L, 5);
+        final Duration duration2 = new Duration(3L, 20);
+        final Duration duration3 = new Duration(4L, 5);
 
         durationConfigRespository.save(duration2);
         durationConfigRespository.save(duration3);
 
         Duration firstDuration = durationConfigRespository.findFirstByOrderByIdAsc();
-        assertThat(firstDuration.getTimeDuration()).isEqualTo(duration2.getTimeDuration());
+        // as command line runner saves one by default on startup it should be 30
+        assertThat(firstDuration.getTimeDuration()).isEqualTo(30);
     }
 
 }

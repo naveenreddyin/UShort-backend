@@ -98,6 +98,10 @@ public class UMSApplicationTests {
 
 	@Test
 	public void contextLoads() {
+
+		assertThat(durationConfigRespository.count()).isNotNull();
+		assertThat(durationConfigRespository.count()).isEqualTo(1L);
+
 	}
 
 	@Test
@@ -154,12 +158,9 @@ public class UMSApplicationTests {
 
 	@Test
 	public void testIfCodeIsValid(){
-//		Response userCreateResponse = given().port(port).contentType("application/json").body(Utils.asJsonString(user))
-//				.when().post("/api/userses").then().statusCode(HttpStatus.SC_CREATED).extract().response();
-//
-//		given().port(port).param("userId", "1").param("code", "1DF2C9")
-//				.when().post("/api/usertotp").then().statusCode(HttpStatus.SC_CREATED).extract().response();
-//
+		userRepository.deleteAll();
+		totpRepository.deleteAll();
+
 		Duration duration = new Duration(1L, 30);
 		durationConfigRespository.save(duration);
 
@@ -173,15 +174,35 @@ public class UMSApplicationTests {
 		given().port(port).when().get("/api/validate/"+userTOTP1.getCode()).then().statusCode(HttpStatus.SC_BAD_REQUEST);
 
 
-		Users anotherUser = new Users(3L,"naveenrandom1234@dispostable.com", "123456");
+		Users anotherUser = new Users(Long.valueOf(userRepository.count()+1),"naveenrandom1234@dispostable.com", "123456");
 		Users userSaveResponse2 = userRepository.save(anotherUser);
 
 		today = LocalDateTime.now();
-		UserTOTP userTOTP2 = new UserTOTP(3L, "123567", today, userSaveResponse2);
+		UserTOTP userTOTP2 = new UserTOTP(Long.valueOf(totpRepository.count()+1), "123567", today, userSaveResponse2);
 		UserTOTP userTOTP3 = totpRepository.save(userTOTP2);
 
 		given().port(port).when().get("/api/validate/"+userTOTP3.getCode()).then().statusCode(HttpStatus.SC_OK);
 
+
+	}
+
+	@Test
+	public void testToGenerateTokenForLoggingInUser(){
+		Users user = new Users(2L,"naveenrandom123@dispostable.com", "123456");
+		given().port(port).contentType("application/json").body(Utils.asJsonString(user))
+				.when().post("/api/userses").then().statusCode(HttpStatus.SC_CREATED);
+		Users user2 = new Users(200L,"naveenrandom12345@dispostable.com", "123456");
+		given().port(port).contentType("application/json").body(Utils.asJsonString(user2))
+				.when().post("/api/userses").then().statusCode(HttpStatus.SC_CREATED);
+		Response response = given().port(port).when().get("/api/generate/"+"naveenrandom123@dispostable.com").then()
+				.statusCode(HttpStatus.SC_OK).extract().response();
+		Response response2 = given().port(port).when().get("/api/generate/"+user2.getEmail()).then()
+				.statusCode(HttpStatus.SC_OK).extract().response();
+
+		Response response3 = given().port(port).when().get("/api/generate/"+user2.getEmail()).then()
+				.statusCode(HttpStatus.SC_CONFLICT).extract().response();
+//		System.out.println(response.prettyPrint());
+//		System.out.println(response2.prettyPrint());
 
 	}
 
