@@ -18,7 +18,7 @@ public class UMSApplication {
 	public CommandLineRunner initialData(DurationConfigRespository durationConfigRespository){
 		return (args) -> {
 
-			durationConfigRespository.save(new Duration(1L, 30));
+			durationConfigRespository.save(new Duration(1L, 5));
 
 		};
 	}
