@@ -1,4 +1,4 @@
-package com.ums.umsbackend.configurations;
+package com.ums.ushortbackend.configurations;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

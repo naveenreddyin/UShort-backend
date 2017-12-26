@@ -1,8 +1,10 @@
-package com.ums.umsbackend.utils;
+package com.ums.ushortbackend.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
  * Created by Naveen on 17/07/2017.
@@ -31,5 +33,15 @@ public class Utils {
             builder.append(ALPHA_NUMERIC_STRING.charAt(character));
         }
         return builder.toString();
+    }
+
+    public static boolean isUrlValid(String url) {
+        boolean valid = true;
+        try {
+            new URL(url);
+        } catch (MalformedURLException e) {
+            valid = false;
+        }
+        return valid;
     }
 }
